@@ -31,7 +31,7 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 # [END imports]
 
 DEFAULT_GUESTBOOK_NAME = 'default_guestbook'
-
+DEFAULT_RESOURCE_NAME = 'default_resource'
 
 # We set a parent key on the 'Greetings' to ensure that they are all
 # in the same entity group. Queries across the single entity group
@@ -44,7 +44,6 @@ def guestbook_key(guestbook_name=DEFAULT_GUESTBOOK_NAME):
     We use guestbook_name as the key.
     """
     return ndb.Key('Guestbook', guestbook_name)
-
 
 # [START greeting]
 class Author(ndb.Model):
@@ -59,7 +58,13 @@ class Greeting(ndb.Model):
     content = ndb.StringProperty(indexed=False)
     date = ndb.DateTimeProperty(auto_now_add=True)
 # [END greeting]
-
+class Resource(ndb.Model):
+    resource_Name=ndb.StringProperty(indexed=True)
+    resource_Owner=ndb.StringProperty(indexed=True)
+    resource_StartTime=ndb.StringProperty(indexed=True)
+    resource_EndTime=ndb.StringProperty(indexed=True)
+    resource_tag=ndb.StringProperty(indexed=True)
+    date = ndb.DateTimeProperty(auto_now_add=True)
 
 # [START main_page]
 class MainPage(webapp2.RequestHandler):
@@ -70,7 +75,9 @@ class MainPage(webapp2.RequestHandler):
         greetings_query = Greeting.query(
             ancestor=guestbook_key(guestbook_name)).order(-Greeting.date)
         greetings = greetings_query.fetch(10)
-
+        
+        resource_query = Resource.query().order(-Resource.date)
+        resources = resource_query.fetch()
         user = users.get_current_user()
         if user:
             url = users.create_logout_url(self.request.uri)
@@ -78,15 +85,17 @@ class MainPage(webapp2.RequestHandler):
         else:
             url = users.create_login_url(self.request.uri)
             url_linktext = 'Login'
-
+        print resources
+        print greetings
         template_values = {
             'user': user,
             'greetings': greetings,
+            'resources': resources,
             'guestbook_name': urllib.quote_plus(guestbook_name),
             'url': url,
             'url_linktext': url_linktext,
+            'username' : user.nickname().split("@")[0]
         }
-
         template = JINJA_ENVIRONMENT.get_template('index.html')
         self.response.write(template.render(template_values))
 # [END main_page]
@@ -117,10 +126,48 @@ class Guestbook(webapp2.RequestHandler):
         self.redirect('/?' + urllib.urlencode(query_params))
 # [END guestbook]
 
+    
+class AddResource(webapp2.RequestHandler):
+    def post(self):
+        user = users.get_current_user()
+        if user:
+            resource = Resource()            
+            resource.resource_Name = self.request.get('resourceName')
+            resource.resource_StartTime = self.request.get('startTime')
+            resource.resource_EndTime = self.request.get('endTime')
+            resource.resource_tag = self.request.get('tags')
+            resource.resource_Owner=str(user.email())
+            resource.put()
+        url = users.create_logout_url(self.request.uri)
+        url_linktext = 'Logout'
+        template_values = {
+            'isSuccess': '1',
+            'user': user,
+            'username' : user.nickname().split("@")[0],
+            'url': url,
+            'url_linktext': url_linktext,
+            }
+        
+        template = JINJA_ENVIRONMENT.get_template('newResource.html')
+        self.response.write(template.render(template_values))
+        
+    def get(self):
+        user = users.get_current_user()
+        url = users.create_logout_url(self.request.uri)
+        url_linktext = 'Logout'
+        template_values = {
+            'user': user,
+            'username' : user.nickname().split("@")[0],
+            'url': url,
+            'url_linktext': url_linktext,
+            }
+        template = JINJA_ENVIRONMENT.get_template('newResource.html')
+        self.response.write(template.render(template_values))
 
 # [START app]
 app = webapp2.WSGIApplication([
     ('/', MainPage),
     ('/sign', Guestbook),
+    ('/addResource',AddResource),
 ], debug=True)
 # [END app]

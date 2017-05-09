@@ -1,0 +1,41 @@
+.black {
+	background-image: url("/bootstrap/img/1.jpg");
+	color: #fff;
+	padding: 150px 25px;
+}
+
+.black-body {
+	background-image: url("/bootstrap/img/2.jpg");
+	color: #fff;
+	padding: 150px 25px;
+}
+
+.footer {
+	background-image: url("/bootstrap/img/2.jpg");
+	color: #fff;
+	padding: 12px 5px;
+}
+
+.container-fluid {
+	padding: 60px 50px;
+}
+
+footer .glyphicon {
+	font-size: 20px;
+	margin-bottom: 20px;
+	color: #F6F6F6;
+}
+.bg-white {
+	background-color: #ffffff;
+}
+th {text-align:center}
+.bg-grey {
+	background-color: #f6f6f6;
+}
+
+@media screen and (max-width: 768px) {
+	.col-sm-4 {
+		text-align: center;
+		margin: 25px 0;
+	}
+}

@@ -1,85 +1,193 @@
 <!DOCTYPE html>
 {% autoescape true %}
 <html>
-  <head>
-    <!-- [START css] -->
-    <link type="text/css" rel="stylesheet" href="/bootstrap/css/bootstrap.css">
-    <link type="text/css" rel="stylesheet" href="/bootstrap/css/bootstrap-responsive.css">
-    <!-- [END css] -->
-    <style type="text/css">
-      body {
-        padding-top: 40px;
-        padding-bottom: 40px;
-        background-color: #f5f5f5;
-      }
-      blockquote {
-        margin-bottom: 10px;
-        border-left-color: #bbb;
-      }
-      form {
-        margin-top: 10px;
-      }
-      .form-signin input[type="text"] {
-        font-size: 16px;
-        height: auto;
-        margin-bottom: 15px;
-        padding: 7px 9px;
-      }
-      .row {
-        margin-left: 0px;
-        margin-top: 10px;
-        overflow: scroll;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="navbar navbar-inverse navbar-fixed-top">
-      <div class="navbar-inner">
-        <div class="container">
-          <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="brand" href="#">App Engine Guestbook</a>
-          <div class="nav-collapse collapse pull-right">
-            <a href="{{ url|safe }}" class="btn">{{ url_linktext }}</a>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="container">
-      <!-- [START greetings] -->
-      {% for greeting in greetings %}
-      <div class="row">
-        {% if greeting.author %}
-          <b>{{ greeting.author.email }}
-            {% if user and user.user_id() == greeting.author.identity %}
-              (You)
-            {% endif %}
-          </b> wrote:
-        {% else %}
-          An anonymous person wrote:
-        {% endif %}
-        <blockquote>{{ greeting.content }}</blockquote>
-      </div>
-      {% endfor %}
-      <!-- [END greetings] -->
+<head>
 
-      <form action="/sign?guestbook_name={{ guestbook_name }}" method="post">
-        <div><textarea name="content" class="input-block-level" rows="3"></textarea></div>
-        <div><input type="submit" class="btn btn-large btn-primary" value="Sign Guestbook"></div>
-      </form>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/bootstrap/css/reserve.css">
 
-      <hr>
+</head>
+<body id="myPage" data-spy="scroll" data-target=".navbar"
+	data-offset="60">
+	<nav class="navbar navbar-default navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target="#myNavbar">
+					<span class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<font size="2"><a class="navbar-brand" href="#">Logged in
+						as: {{ username }}</a></font>
+			</div>
+			<div class="collapse navbar-collapse" id="myNavbar">
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="#userReservations"><B>My Reservations</B></a></li>
+					<li><a href="#userResources"><B>My Resources</B></a></li>
+					<li><a href="#allResources"><B>All Resources</B></a></li>
+					<li><a href="{{ url|safe }}"><B>{{ url_linktext }}</B></a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<div class="black text-center">
+		<h1>Resource Share</h1>
+	</div>
+	<!-- Container (About userReservations) -->
+	<div id=userReservations class="container-fluid bg-grey text-center">
+		<div class="row">
+			<div class="col-sm-20">
+				<div class="accordion-group">
+					<div class="accordion-heading">
+						<h2>
+							<a class="accordion-toggle" data-toggle="collapse"
+								data-parent="#accordion2" href="#collapseUserReservations">
+								My Reservations </a>
+						</h2>
+					</div>
+					<div id="collapseUserReservations"
+						class="accordion-body collapse in">
+						<div class="accordion-inner">
+							<HR>
+							<h5>Anim pariatur cliche reprehenderit, enim eiusmod high
+								life accusamus terry richardson ad squid. 3 wolf moon officia
+								aute, non cupidatat skateboard dolor brunch. Food truck quinoa
+								nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua
+								put a bird on it squid single-origin coffee nulla assumenda
+								shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore
+								wes anderson cred nesciunt sapiente ea proident. Ad vegan
+								excepteur butcher vice lomo. Leggings occaecat craft beer
+								farm-to-table, raw denim aesthetic synth nesciunt you probably
+								haven't heard of them accusamus labore sustainable VHS.</h5>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
-      <form>Guestbook name:
-        <input value="{{ guestbook_name }}" name="guestbook_name">
-        <input type="submit" value="switch">
-      </form>
+	<div id=userResources class="container-fluid black-body text-center">
+		<div class="row">
+			<div class="col-sm-20">
+				<div class="accordion-group">
+					<div class="accordion-heading">
+						<h2>
+							<a class="accordion-toggle" data-toggle="collapse"
+								data-parent="#accordion2" href="#collapseUserResources"> My
+								Resources </a>
+						</h2>
+					</div>
+					<div id="collapseUserResources" class="accordion-body collapse in">
+						<div class="accordion-inner">
+							<HR><h5>Anim pariatur cliche reprehenderit, enim eiusmod high
+								life accusamus terry richardson ad squid. 3 wolf moon officia
+								aute, non cupidatat skateboard dolor brunch. Food truck quinoa
+								nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua
+								put a bird on it squid single-origin coffee nulla assumenda
+								shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore
+								wes anderson cred nesciunt sapiente ea proident. Ad vegan
+								excepteur butcher vice lomo. Leggings occaecat craft beer
+								farm-to-table, raw denim aesthetic synth nesciunt you probably
+								haven't heard of them accusamus labore sustainable VHS.</h5>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
-      <a href="{{ url|safe }}">{{ url_linktext }}</a>
-    </div>
-  </body>
+	<div id=allResources class="container-fluid bg-grey text-center">
+		<div class="row">
+			<div class="col-sm-15">
+				<div class="accordion-group">
+					<div class="accordion-heading">
+						<h2>
+							<a class="accordion-toggle" data-toggle="collapse"
+								data-parent="#accordion2" href="#collapseAllResources"> All
+								Resources </a>
+						</h2>
+					</div>
+					<div id="collapseAllResources" class="accordion-body collapse in">
+						<HR><table class="table table-hover bg-white accordion-inner text-center">
+							<thead>
+								<tr>
+									<th align="center">Resource Name</th>
+									<th align="center">Created By</th>
+									<th align="center">Reservation Time</th>
+									<th align="center">Duration(in minutes)</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for resource in resources %}
+								<tr>
+									<td>{{ resource.resource_Name }}</td>
+									<td>{{ resource.resource_Owner }}</td>
+									<td>{{ resource.resource_StartTime }}</td>
+									<td>{{ resource.resource_EndTime }}</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+		<HR>
+		<div class="text-center">
+			<input type="button" class="btn btn-large btn-primary"
+				style="width: 25%; height: 20%; float: center; vertical-align: top;"
+				value="Add a new Resource" onclick="location.href='/addResource'">
+		</div>
+	</div>
+	<div class="container">
+		Hello, {{ user }}<BR> {{ blah }}
+		<!-- [START greetings] -->
+		{% for greeting in greetings %}
+		<div class="row">
+			{% if greeting.author %} <b>{{ greeting.author.email }} {% if
+				user and user.user_id() == greeting.author.identity %} (You) {%
+				endif %} </b> wrote: {% else %} An anonymous person wrote: {% endif %}
+			<blockquote>{{ greeting.content }}</blockquote>
+		</div>
+		{% endfor %}
+		<!-- [END greetings] -->
+
+
+
+		<form action="/sign?guestbook_name={{ guestbook_name }}" method="post">
+			<div>
+				<textarea name="content" class="input-block-level" rows="3"></textarea>
+			</div>
+			<div>
+				<input type="submit" class="btn btn-large btn-primary"
+					value="Sign Guestbook">
+			</div>
+		</form>
+		<hr>
+
+		<form>
+			Guestbook name: <input value="{{ guestbook_name }}"
+				name="guestbook_name"> <input type="submit" value="switch">
+		</form>
+
+		<a href="/addResource">go</a>
+	</div>
+
+	<footer class=" footer text-center">
+		<a href="#myPage" title="To Top"> <span
+			class="glyphicon glyphicon-chevron-up"></span>
+		</a>
+		<p>
+			Web Application made by <a
+				href="https://www.linkedin.com/in/abhineetkalra/" title="">Abhineet
+				Kalra</a>
+		</p>
+	</footer>
+</body>
 </html>
 {% endautoescape %}
