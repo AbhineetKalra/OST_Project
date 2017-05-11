@@ -28,7 +28,13 @@ footer .glyphicon {
 .bg-white {
 	background-color: #ffffff;
 }
+
 th {text-align:center}
+
+.padding1 {
+	padding: 60px 50px;
+}
+
 .bg-grey {
 	background-color: #f6f6f6;
 }

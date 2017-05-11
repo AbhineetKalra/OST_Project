@@ -125,7 +125,7 @@
 							<tbody>
 								{% for resource in resources %}
 								<tr>
-									<td>{{ resource.resource_Name }}</td>
+									<td><a href="viewResource?keyVal={{ resource.primaryKey }}">{{ resource.resource_Name }}</a></td>
 									<td>{{ resource.resource_Owner }}</td>
 									<td>{{ resource.resource_StartTime }}</td>
 									<td>{{ resource.resource_EndTime }}</td>
