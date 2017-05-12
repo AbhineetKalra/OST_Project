@@ -26,7 +26,7 @@
 			</div>
 			<div class="collapse navbar-collapse" id="myNavbar">
 				<ul class="nav navbar-nav navbar-right">
-					<li><a href="/#userReservations"><B>My Reservations</B></a></li>
+					<li><a href="/#myPage"><B>My Reservations</B></a></li>
 					<li><a href="/#userResources"><B>My Resources</B></a></li>
 					<li><a href="/#allResources"><B>All Resources</B></a></li>
 					<li><a href="{{ url|safe }}"><B>{{ url_linktext }}</B></a></li>
@@ -34,15 +34,63 @@
 			</div>
 		</div>
 	</nav>
-	<div class="black text-center">
-		<h3>More options for {{ outputResource[0].resource_Name }} !</h3><BR>
-					Resource Name: {{ outputResource[0].resource_Name }}<BR>
-					Availability Start Time: {{ outputResource[0].resource_StartTime }}<BR>
-					Availability End Time: {{ outputResource[0].resource_EndTime }}
+	<div class="black text-center mediumPadding">
+		<h3>More options for {{ outputResource[0].resource_Name }} !</h3>
+		Availability Start Time: {{ outputResource[0].resource_StartTime }}<BR>
+		Availability End Time: {{ outputResource[0].resource_EndTime }}
 	</div>
+	
+	<div id=resourceDetails class="bg-grey">
+		<div class="row">
+			<div class="col-sm-15">
+				<div class="accordion-group">
+					<div class="accordion-heading text-center">
+						<h2>
+							<a class="accordion-toggle text-center" data-toggle="collapse"
+								data-parent="#accordion2" href="#details"> Resource Details
+							</a>
+						</h2>
+					</div>
+					<div id="details" class="accordion-body collapse in">
+						<HR>
+						<table
+							class="table table-hover bg-white accordion-inner text-center">
+							
+							<tbody>
+								<tr>
+									<td><b>Resource Name</b></td>
+									<td>{{ outputResource[0].resource_Name }}</td>
+								</tr>
+								<tr>
+									<td><b>Availabile from</b></td>
+									<td>{{ outputResource[0].resource_StartTime }}</td>
+								</tr>
+								<tr>
+									<td><b>Availabile till</b></td>
+									<td>{{ outputResource[0].resource_EndTime }}</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div id="viewButtons" class="text-center bg-grey lessBottomPadding">
+		<input type="button" class="btn btn-large btn-primary"
+			style="width: 25%; height: 20%; float: center; vertical-align: top;"
+			value="Reserve It" onclick="location.href='/addReservation?keyVal={{ outputResource[0].primaryKey }}'">
 	{% if isEditable %}
-	<form class="form-horizontal" onsubmit="return validateForm()"
+	<input type="button" class="btn btn-large btn-primary accordion-toggle"
+			style="width: 25%; height: 20%; float: center; vertical-align: top;"
+			value="Edit Resource" data-toggle="collapse" data-target="#editForm"> 
+	{% endif %}
+	</div>
+
+	<div id="editForm" class="accordion-body collapse bg-grey"><form class="form-horizontal" onsubmit="return validateForm()"
 		action="/addResource" method="post" role="form">
+		<BR>
 		<div class="form-group">
 			<label class="control-label col-sm-2" for="resourceName">Resource
 				Name</label>
@@ -82,54 +130,8 @@
 			</div>
 		</div>
 	</form>
-	{% else %}
-	<div id=resourceDetails class="container-fluid bg-grey">
-		<div class="row">
-			<div class="col-sm-15">
-				<div class="accordion-group">
-					<div class="accordion-heading text-center">
-						<h2>
-							<a class="accordion-toggle text-center" data-toggle="collapse"
-								data-parent="#accordion2" href="#details"> Resource Details
-							</a>
-						</h2>
-					</div>
-					<div id="details" class="accordion-body collapse in">
-					<HR>
-					<table
-						class="table table-hover bg-white accordion-inner text-center">
-						<thead>
-							<tr>
-								<th align="center">Attribute</th>
-								<th align="center">Value</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td><b>Resource Name</b></td>
-								<td>{{ outputResource[0].resource_Name }}</td>
-							</tr>
-							<tr>
-								<td><b>Availabile from</b></td>
-								<td>{{ outputResource[0].resource_StartTime }}</td>
-							</tr>
-							<tr>
-								<td><b>Availabile till</b></td>
-								<td>{{ outputResource[0].resource_EndTime }}</td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
 	</div>
-	{% endif %}
-	<div class="text-center">
-			<input type="button" class="btn btn-large btn-primary"
-				style="width: 25%; height: 20%; float: center; vertical-align: top;"
-				value="Reserve it" onclick="location.href='/addReservation'">
-		</div>
-	
+
 	<footer class=" footer text-center">
 		<a href="#myPage" title="To Top"> <span
 			class="glyphicon glyphicon-chevron-up"></span>

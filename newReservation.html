@@ -2,7 +2,7 @@
 {% autoescape true %}
 <html>
 <head>
-<title>Add a new resource</title>
+<title>New Reservation</title>
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script
@@ -10,12 +10,7 @@
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <link rel="stylesheet" type="text/css" href="/bootstrap/css/reserve.css">
-<script>
-function validateForm() {
-alert(" Availability end time must be filled out");
-return true;
-}
-</script>
+
 
 </head>
 <body id="myPage" data-spy="scroll" data-target=".navbar"
@@ -28,8 +23,7 @@ return true;
 					<span class="icon-bar"></span> <span class="icon-bar"></span> <span
 						class="icon-bar"></span>
 				</button>
-			<a class="navbar-brand" href="/">Logged in
-						as: {{ username }}</a>
+				<a class="navbar-brand" href="/">Logged in as: {{ username }}</a>
 			</div>
 			<div class="collapse navbar-collapse" id="myNavbar">
 				<ul class="nav navbar-nav navbar-right">
@@ -41,45 +35,69 @@ return true;
 			</div>
 		</div>
 	</nav>
-	<div class="black text-center">
-		<h3>Let's add a new Resource</h3>
-	</div>
-	<BR>
-	
-<form class="form-horizontal" onsubmit="return validateForm()" action="/addResource" method="post" role="form">
-  <div class="form-group">
-    <label class="control-label col-sm-2" for="resourceName">Resource Name</label>
-    <div class="col-sm-8">
-      <input type="text" class="form-control" id="resourceName" name="resourceName" placeholder="Enter name of the resource" required="required">
-    </div>
-  </div>
-  <div class="form-group">
-    <label class="control-label col-sm-2" for="startTime">Availability Start Time:</label>
-    <div class="col-sm-8"> 
-      <input type="time" class="form-control" id="startTime" name="startTime" placeholder="Enter starting time" required="required">
-    </div>
-  </div>
-  <div class="form-group">
-    <label class="control-label col-sm-2" for="endTime">Availability End Time:</label>
-    <div class="col-sm-8"> 
-      <input type="time" class="form-control" name="endTime" id="endTime" placeholder="Enter ending time" required="required">
-    </div>
-  </div>
-  <div class="form-group">
-    <label class="control-label col-sm-2" for="tags">Tags:</label>
-    <div class="col-sm-8"> 
-      <input type="text" class="form-control" id="tags" name="tags" placeholder="Short description">
-    </div>
-  </div>
-  <div class="form-group"> 
-    <div class="col-sm-offset-2 col-sm-8 text-center">
-      <button type="submit" class="btn btn-primary text-center">Submit</button>
-    </div>
-  </div>
-</form>
 
-<div  id="js">
-</div>
+
+	<div class="black text-center mediumPadding">
+		<BR>
+		<h3>Ok, So Lets Reserve a Resource!</h3>
+		<h5>Now reserving {{ reservingResource[0].resource_Name }}</h5>
+	</div>
+
+
+	<div class="text-center">
+		<div class="accordion-heading">
+			<h2>
+				<a class="accordion-toggle" data-toggle="collapse"
+					data-parent="#accordion2" href="#collapseAllResources">
+					Rerservation Details </a>
+			</h2>
+		</div>
+		<div class=" lessBottomPadding accordion-body collapse in"
+			id="collapseAllResources">
+			<form class="form-horizontal" onsubmit="return validateForm()"
+				action="/addReservation" method="post" role="form">
+				<div class="form-group">
+					<label class="control-label col-sm-2 hidden" for="resourceName">Resource
+						Name</label>
+					<div class="col-sm-8">
+						<input type="text" class="form-control hidden" id="resourceName"
+							name="resourceName" placeholder="Enter name of the resource"
+							value="{{ reservingResource[0].resource_Name }}"
+							required="required">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-sm-2" for="startTime">Reservation
+						Start Time:</label>
+					<div class="col-sm-8">
+						<input type="time" class="form-control" id="startTime"
+							name="startTime" placeholder="Enter starting time"
+							required="required">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-sm-2" for="endTime">Reservation
+						End Time:</label>
+					<div class="col-sm-8">
+						<input type="time" class="form-control" name="endTime"
+							id="endTime" placeholder="Enter ending time" required="required">
+					</div>
+				</div>
+				<div class="form-group">
+					<label class="control-label col-sm-2" for="tags">Notes:</label>
+					<div class="col-sm-8">
+						<input type="text" class="form-control" id="tags" name="notes"
+							placeholder="Reservation Notes">
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-sm-offset-2 col-sm-8 text-center">
+						<button type="submit" class="btn btn-primary text-center">Submit</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
 	<footer class=" footer text-center">
 		<a href="#myPage" title="To Top"> <span
 			class="glyphicon glyphicon-chevron-up"></span>

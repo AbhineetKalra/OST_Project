@@ -9,8 +9,9 @@
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="bootstrap/js/smoothScrolling.js"></script>
 <link rel="stylesheet" type="text/css" href="/bootstrap/css/reserve.css">
-
+<title>Resource Share Home</title>
 </head>
 <body id="myPage" data-spy="scroll" data-target=".navbar"
 	data-offset="60">
@@ -35,43 +36,56 @@
 			</div>
 		</div>
 	</nav>
-	<div class="black text-center">
+	<div class="black text-center bigPadding">
 		<h1>Resource Share</h1>
 	</div>
+
+
 	<!-- Container (About userReservations) -->
-	<div id=userReservations class="container-fluid bg-grey text-center">
+		<div id=userReservations class="container-fluid bg-grey text-center">
 		<div class="row">
-			<div class="col-sm-20">
+			<div class="col-sm-15">
 				<div class="accordion-group">
 					<div class="accordion-heading">
 						<h2>
 							<a class="accordion-toggle" data-toggle="collapse"
-								data-parent="#accordion2" href="#collapseUserReservations">
-								My Reservations </a>
+								data-parent="#accordion2" href="#collapseUserResources"> My Reservations </a>
 						</h2>
 					</div>
-					<div id="collapseUserReservations"
-						class="accordion-body collapse in">
-						<div class="accordion-inner">
-							<HR>
-							<h5>Anim pariatur cliche reprehenderit, enim eiusmod high
-								life accusamus terry richardson ad squid. 3 wolf moon officia
-								aute, non cupidatat skateboard dolor brunch. Food truck quinoa
-								nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua
-								put a bird on it squid single-origin coffee nulla assumenda
-								shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore
-								wes anderson cred nesciunt sapiente ea proident. Ad vegan
-								excepteur butcher vice lomo. Leggings occaecat craft beer
-								farm-to-table, raw denim aesthetic synth nesciunt you probably
-								haven't heard of them accusamus labore sustainable VHS.</h5>
-						</div>
+					<div id="collapseUserResources" class="accordion-body collapse in">
+						<HR>
+						<table
+							class="table table-hover bg-white accordion-inner text-center">
+							<thead>
+								<tr>
+									<th align="center">Resource Name</th>
+									<th align="center">Created By</th>
+									<th align="center">Available From</th>
+									<th align="center">Duration(in minutes)</th>
+								</tr>
+							</thead>
+							<tbody>
+								{% for reservation in userReservations %}
+								<tr>
+									<td><a
+										href="viewResource?keyVal={{ reservation.resource_Name }}">{{
+											reservation.resource_Name }}</a></td>
+									<td>{{ reservation.reservation_Owner }}</td>
+									<td>{{ reservation.reservation_StartTime }}</td>
+									<td>{{ reservation.reservation_EndTime }}</td>
+								</tr>
+								{% endfor %}
+							</tbody>
+						</table>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+	</div>
 
-	<div id=userResources class="container-fluid black-body text-center">
+	<div id=userResources
+		class="container-fluid black-body-table text-center">
 		<div class="row">
 			<div class="col-sm-20">
 				<div class="accordion-group">
@@ -84,16 +98,29 @@
 					</div>
 					<div id="collapseUserResources" class="accordion-body collapse in">
 						<div class="accordion-inner">
-							<HR><h5>Anim pariatur cliche reprehenderit, enim eiusmod high
-								life accusamus terry richardson ad squid. 3 wolf moon officia
-								aute, non cupidatat skateboard dolor brunch. Food truck quinoa
-								nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua
-								put a bird on it squid single-origin coffee nulla assumenda
-								shoreditch et. Nihil anim keffiyeh helvetica, craft beer labore
-								wes anderson cred nesciunt sapiente ea proident. Ad vegan
-								excepteur butcher vice lomo. Leggings occaecat craft beer
-								farm-to-table, raw denim aesthetic synth nesciunt you probably
-								haven't heard of them accusamus labore sustainable VHS.</h5>
+							<BR>
+							<table class="table accordion-inner text-center blackTable">
+								<thead>
+									<tr>
+										<th align="center">Resource Name</th>
+										<th align="center">Created By</th>
+										<th align="center">Available From</th>
+										<th align="center">Duration(in minutes)</th>
+									</tr>
+								</thead>
+								<tbody>
+									{% for resource in userResources %}
+									<tr>
+										<td><a
+											href="viewResource?keyVal={{ resource.primaryKey }}">{{
+												resource.resource_Name }}</a></td>
+										<td>{{ resource.resource_Owner }}</td>
+										<td>{{ resource.resource_StartTime }}</td>
+										<td>{{ resource.resource_EndTime }}</td>
+									</tr>
+									{% endfor %}
+								</tbody>
+							</table>
 						</div>
 					</div>
 				</div>
@@ -113,19 +140,23 @@
 						</h2>
 					</div>
 					<div id="collapseAllResources" class="accordion-body collapse in">
-						<HR><table class="table table-hover bg-white accordion-inner text-center">
+						<HR>
+						<table
+							class="table table-hover bg-white accordion-inner text-center">
 							<thead>
 								<tr>
 									<th align="center">Resource Name</th>
 									<th align="center">Created By</th>
-									<th align="center">Reservation Time</th>
+									<th align="center">Available From</th>
 									<th align="center">Duration(in minutes)</th>
 								</tr>
 							</thead>
 							<tbody>
 								{% for resource in resources %}
 								<tr>
-									<td><a href="viewResource?keyVal={{ resource.primaryKey }}">{{ resource.resource_Name }}</a></td>
+									<td><a
+										href="viewResource?keyVal={{ resource.primaryKey }}">{{
+											resource.resource_Name }}</a></td>
 									<td>{{ resource.resource_Owner }}</td>
 									<td>{{ resource.resource_StartTime }}</td>
 									<td>{{ resource.resource_EndTime }}</td>
@@ -143,39 +174,6 @@
 				style="width: 25%; height: 20%; float: center; vertical-align: top;"
 				value="Add a new Resource" onclick="location.href='/addResource'">
 		</div>
-	</div>
-	<div class="container">
-		Hello, {{ user }}<BR> {{ blah }}
-		<!-- [START greetings] -->
-		{% for greeting in greetings %}
-		<div class="row">
-			{% if greeting.author %} <b>{{ greeting.author.email }} {% if
-				user and user.user_id() == greeting.author.identity %} (You) {%
-				endif %} </b> wrote: {% else %} An anonymous person wrote: {% endif %}
-			<blockquote>{{ greeting.content }}</blockquote>
-		</div>
-		{% endfor %}
-		<!-- [END greetings] -->
-
-
-
-		<form action="/sign?guestbook_name={{ guestbook_name }}" method="post">
-			<div>
-				<textarea name="content" class="input-block-level" rows="3"></textarea>
-			</div>
-			<div>
-				<input type="submit" class="btn btn-large btn-primary"
-					value="Sign Guestbook">
-			</div>
-		</form>
-		<hr>
-
-		<form>
-			Guestbook name: <input value="{{ guestbook_name }}"
-				name="guestbook_name"> <input type="submit" value="switch">
-		</form>
-
-		<a href="/addResource">go</a>
 	</div>
 
 	<footer class=" footer text-center">
