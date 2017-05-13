@@ -100,6 +100,10 @@ class MainPage(webapp2.RequestHandler):
         resources = resource_query.fetch()
         reservationList=Reservation.query().order(Reservation.reservation_StartTime).fetch()
         user = users.get_current_user()
+        showFull=True
+        keyVal=self.request.get('keyVal')
+        if(len(keyVal)>1):
+            showFull=False
         if user:
             url = users.create_logout_url(self.request.uri)
             url_linktext = 'Logout'
@@ -118,7 +122,8 @@ class MainPage(webapp2.RequestHandler):
             'userReservations': filteredReservations,
             'url': url,
             'url_linktext': url_linktext,
-            'username' : user.nickname().split("@")[0]
+            'username' : user.nickname().split("@")[0],
+            'showFull':showFull,
         }
         template = JINJA_ENVIRONMENT.get_template('index.html')
         self.response.write(template.render(template_values))
@@ -179,15 +184,18 @@ class AddReservation(webapp2.RequestHandler):
             #print self.request.get('resourcePrimaryKey')
             reservingResourceDetails=Resource.query(Resource.primaryKey==str(self.request.get('resourcePrimaryKey'))).fetch()
             reservation.reservation_StartTime = self.request.get('startTime')
-            reservation.reservation_EndTime = self.request.get('endTime')
+            #reservation.reservation_EndTime = self.request.get('endTime')
             #print str(self.request.get('endTime'))
             #print self.request.get('startTime')
             #print reservingResourceDetails;
             reservation.reservation_Notes = self.request.get('notes')
             reservation.primaryKey=str(random.randint(100000,1000000))
             reservation.reservation_Owner=str(user.email())
-            differenceTime= datetime.datetime.strptime(self.request.get('endTime'),'%H:%M')-datetime.datetime.strptime(self.request.get('startTime'),'%H:%M')
-            reservation.reservation_Duration= int((differenceTime.total_seconds())/60)
+            reservation.reservation_Duration= int(self.request.get('duration'))
+            endTime= str((datetime.datetime.strptime(self.request.get('startTime'),'%H:%M')+datetime.timedelta(minutes=(int(self.request.get('duration'))))))
+            times=endTime.split(":")
+            print times[0].split(" ")[1]+":"+times[1]
+            reservation.reservation_EndTime=times[0].split(" ")[1]+":"+times[1]
             rquery=Resource.query(Resource.primaryKey==str(self.request.get('resourcePrimaryKey'))).fetch()
             presentDateTime= datetime.datetime.now()- datetime.timedelta(minutes=240)
 

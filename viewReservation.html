@@ -59,17 +59,20 @@
 							class="table table-hover bg-white accordion-inner text-center">
 
 							<tbody>
+								<tr><td><b>User</b></td>
+								<td><a href="/?keyVal=onlyUser">{{ outputReservation[0].reservation_Owner }}</a></td>
+								</tr>
 								<tr>
 									<td><b>Resource Name</b></td>
-									<td>{{ outputReservation[0].resource_Name }}</td>
+									<td><a href="viewResource?keyVal={{ outputReservation[0].resource_PrimaryKey }}">{{ outputReservation[0].resource_Name }}</a></td>
 								</tr>
 								<tr>
 									<td><b>Reserved from</b></td>
 									<td>{{ outputReservation[0].reservation_StartTime }}</td>
 								</tr>
 								<tr>
-									<td><b>Reserved till</b></td>
-									<td>{{ outputReservation[0].reservation_EndTime }}</td>
+									<td><b>Reserved for</b></td>
+									<td>{{ outputReservation[0].reservation_Duration }} minutes</td>
 								</tr>
 							</tbody>
 						</table>

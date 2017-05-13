@@ -37,11 +37,15 @@
 		</div>
 	</nav>
 	<div class="black text-center mediumPadding">
-		<h3>More options for {{ outputResource[0].resource_Name }} !</h3>
-		Availability Start Time: {{ outputResource[0].resource_StartTime }}<BR>
-		Availability End Time: {{ outputResource[0].resource_EndTime }}
+		<h2>Details for {{ outputResource[0].resource_Name }} !</h2>
+		<b>Availability Start Time:</b> {{
+		outputResource[0].resource_StartTime }}<BR> <b>Availability
+			End Time: </b>{{ outputResource[0].resource_EndTime }}<BR> <b>Created
+			By:</b> {{ outputResource[0].resource_Owner }} <BR> <b>Last
+			Reserved At:</b> {% if outputResource[0].justCreated==1 %} Not Reserved
+		Yet! {% else %} {{ outputResource[0].date }} {% endif %}
 	</div>
-	
+
 	<div id=resourceDetails class="bg-grey">
 		<div class="row">
 			<div class="col-sm-15">
@@ -49,8 +53,8 @@
 					<div class="accordion-heading text-center">
 						<h3>
 							<a class="accordion-toggle text-center" data-toggle="collapse"
-								data-parent="#accordion2" href="#details"> Upcoming Reservations for {{ outputResource[0].resource_Name }} ! 
-							</a>
+								data-parent="#accordion2" href="#details"> Upcoming
+								Reservations for {{ outputResource[0].resource_Name }} ! </a>
 						</h3>
 					</div>
 					<div id="details" class="accordion-body collapse in">
@@ -68,7 +72,7 @@
 							<tbody>
 								{% for reservation in upcomingReservations %}
 								<tr>
-								<td>{{ reservation.reservation_Owner }}</td>
+									<td>{{ reservation.reservation_Owner }}</td>
 									<td><a
 										href="viewReservation?keyVal={{ reservation.primaryKey }}">{{
 											reservation.resource_Name }}</a></td>
@@ -83,63 +87,68 @@
 			</div>
 		</div>
 	</div>
-	
+
 	<div id="viewButtons" class="text-center bg-grey lessBottomPadding">
 		<input type="button" class="btn btn-large btn-primary"
 			style="width: 25%; height: 20%; float: center; vertical-align: top;"
-			value="Reserve It" onclick="location.href='/addReservation?keyVal={{ outputResource[0].primaryKey }}'">
-	{% if isEditable %}
-	<input type="button" class="btn btn-large btn-primary accordion-toggle"
+			value="Reserve It"
+			onclick="location.href='/addReservation?keyVal={{ outputResource[0].primaryKey }}'">
+		{% if isEditable %} <input type="button"
+			class="btn btn-large btn-primary accordion-toggle"
 			style="width: 25%; height: 20%; float: center; vertical-align: top;"
-			value="Edit Resource" data-toggle="collapse" data-target="#editForm"> 
-	{% endif %}
+			value="Edit Resource" data-toggle="collapse" data-target="#editForm">
+		{% endif %}
 	</div>
 
-	<div id="editForm" class="accordion-body collapse bg-grey"><form class="form-horizontal"
-		action="/editResource" method="post" role="form" onsubmit="return validateForm()">
-		<BR>
-		<div class="form-group">
-			<label class="control-label col-sm-2" for="resourceName">Resource
-				Name</label>
-			<div class="col-sm-8">
-				<input type="text" class="form-control" id="resourceName"
-					name="resourceName" placeholder="Enter name of the resource"
-					required="required" value="{{ outputResource[0].resource_Name }}">
-				<input type="text" class="form-control hidden" id="resourceKey"
-					name="resourceKey" placeholder="Enter name of the resource"
-					required="required" value="{{ outputResource[0].primaryKey }}">
+	<div id="editForm" class="accordion-body collapse bg-grey">
+		<form class="form-horizontal" action="/editResource" method="post"
+			role="form" onsubmit="return validateForm()">
+			<BR>
+			<div class="form-group">
+				<label class="control-label col-sm-2" for="resourceName">Resource
+					Name</label>
+				<div class="col-sm-8">
+					<input type="text" class="form-control" id="resourceName"
+						name="resourceName" placeholder="Enter name of the resource"
+						required="required" value="{{ outputResource[0].resource_Name }}">
+					<input type="text" class="form-control hidden" id="resourceKey"
+						name="resourceKey" placeholder="Enter name of the resource"
+						required="required" value="{{ outputResource[0].primaryKey }}">
+				</div>
 			</div>
-		</div>
-		<div class="form-group">
-			<label class="control-label col-sm-2" for="startTime">Availability
-				Start Time:</label>
-			<div class="col-sm-8">
-				<input type="time" class="form-control" id="startTime"
-					name="startTime" placeholder="Enter starting time"
-					required="required" value="{{ outputResource[0].resource_StartTime }}">
+			<div class="form-group">
+				<label class="control-label col-sm-2" for="startTime">Availability
+					Start Time:</label>
+				<div class="col-sm-8">
+					<input type="time" class="form-control" id="startTime"
+						name="startTime" placeholder="Enter starting time"
+						required="required"
+						value="{{ outputResource[0].resource_StartTime }}">
+				</div>
 			</div>
-		</div>
-		<div class="form-group">
-			<label class="control-label col-sm-2" for="endTime">Availability
-				End Time:</label>
-			<div class="col-sm-8">
-				<input type="time" class="form-control" name="endTime" id="endTime"
-					placeholder="Enter ending time" required="required" value="{{ outputResource[0].resource_EndTime }}">
+			<div class="form-group">
+				<label class="control-label col-sm-2" for="endTime">Availability
+					End Time:</label>
+				<div class="col-sm-8">
+					<input type="time" class="form-control" name="endTime" id="endTime"
+						placeholder="Enter ending time" required="required"
+						value="{{ outputResource[0].resource_EndTime }}">
+				</div>
 			</div>
-		</div>
-		<div class="form-group">
-			<label class="control-label col-sm-2" for="tags">Tags:</label>
-			<div class="col-sm-8">
-				<input type="text" class="form-control" id="tags" name="tags"
-					placeholder="Short description" value="{{ outputResource[0].resource_tag }}">
+			<div class="form-group">
+				<label class="control-label col-sm-2" for="tags">Tags:</label>
+				<div class="col-sm-8">
+					<input type="text" class="form-control" id="tags" name="tags"
+						placeholder="Short description"
+						value="{{ outputResource[0].resource_tag }}">
+				</div>
 			</div>
-		</div>
-		<div class="form-group">
-			<div class="col-sm-offset-2 col-sm-8 text-center">
-				<button type="submit" class="btn btn-primary text-center">Submit</button>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-8 text-center">
+					<button type="submit" class="btn btn-primary text-center">Submit</button>
+				</div>
 			</div>
-		</div>
-	</form>
+		</form>
 	</div>
 
 	<footer class=" footer text-center">
