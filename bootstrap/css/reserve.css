@@ -1,0 +1,92 @@
+.black {
+	background-image: url("/bootstrap/img/1.jpg");
+	color: #fff;
+}
+
+.black-body {
+	background-image: url("/bootstrap/img/2.jpg");
+	color: #fff;
+}
+
+.black-body-table {
+	background-image: url("/bootstrap/img/2.jpg");
+}
+
+.bigPadding {
+	padding: 150px 25px;
+}
+
+.mediumPadding {
+	padding: 100px 25px;
+}
+
+.smallPadding {
+	padding: 50px 25px;
+}
+
+.lessBottomPadding {
+	padding-bottom: 10px;
+}
+
+.lessTopPadding {
+	padding-top: 10px;
+}
+
+.blackTable td {
+	color: #fff;
+}
+
+.blackTable th {
+	color: #fff;
+}
+
+table.blackTable>thead>tr>th {
+	border-color: #474747;
+}
+
+table.blackTable>tbody>tr>td {
+	border-color: #474747;
+}
+
+.footer {
+	background-image: url("/bootstrap/img/2.jpg");
+	padding: 12px 5px;
+	color: #fff;
+}
+
+.container-fluid {
+	padding: 60px 50px;
+}
+
+#resourceDetails {
+	padding: 20px 50px;
+}
+
+footer .glyphicon {
+	font-size: 20px;
+	margin-bottom: 20px;
+	color: #F6F6F6;
+}
+
+.bg-white {
+	background-color: #ffffff;
+}
+
+th {
+	text-align: center
+}
+
+.padding1 {
+	padding: 60px 50px;
+}
+
+.bg-grey {
+	background-color: #f6f6f6;
+}
+
+@media screen and (max-width: 768px) {
+	.col-sm-4 {
+		text-align: center;
+		margin: 25px 0;
+	}
+}
