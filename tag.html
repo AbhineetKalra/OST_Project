@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+{% autoescape true %}
+<html>
+<head>
+<title>New Reservation</title>
+<link rel="stylesheet"
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script
+	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/bootstrap/css/reserve.css">
+
+</head>
+<body id="myPage" data-spy="scroll" data-target=".navbar"
+	data-offset="60">
+	<nav class="navbar navbar-default navbar-fixed-top">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse"
+					data-target="#myNavbar">
+					<span class="icon-bar"></span> <span class="icon-bar"></span> <span
+						class="icon-bar"></span>
+				</button>
+				<a class="navbar-brand" href="/">Logged in as: {{ username }}</a>
+			</div>
+			<div class="collapse navbar-collapse" id="myNavbar">
+				<ul class="nav navbar-nav navbar-right">
+					<li><a href="/#userReservations"><B>My Reservations</B></a></li>
+					<li><a href="/#userResources"><B>My Resources</B></a></li>
+					<li><a href="/#allResources"><B>All Resources</B></a></li>
+					<li><a href="{{ url|safe }}"><B>{{ url_linktext }}</B></a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+
+	<div class="black text-center mediumPadding">
+		<BR>
+		<h2>Similar Resources Containing {{ tagName }} Tag.</h2>
+	</div>
+
+
+	<div class="text-center">
+		<div class="accordion-heading">
+			<h3>
+				<a class="accordion-toggle" data-toggle="collapse"
+					data-parent="#accordion2" href="#collapseAllResources">
+					Resource Details </a>
+			</h3>
+		</div>
+		<div class=" lessBottomPadding accordion-body collapse in"
+			id="collapseAllResources"><BR>
+		<table class="table accordion-inner text-center ">
+								<thead>
+									<tr>
+										<th align="center">Resource Name</th>
+										<th align="center">Created By</th>
+										<th align="center">Available From</th>
+										<th align="center">Available Till</th>
+										<th align="center">Last reserved at</th>
+										<th align="center">Tags</th>
+										<th align="center">Total Reservations</th>
+									</tr>
+								</thead>
+								<tbody>
+			{% for resource in tagResources %}
+									<tr>
+										<td><a
+											href="viewResource?keyVal={{ resource.primaryKey }}">{{
+												resource.resource_Name }}</a></td>
+										<td>{{ resource.resource_Owner }}</td>
+										<td>{{ resource.resource_StartTime }}</td>
+										<td>{{ resource.resource_EndTime }}</td>
+									{% if resource.justCreated==1 %}
+									<td> Not Reserved Yet! </td>
+									{% else %}
+										<td>{{ resource.date }}</td>
+									{% endif %}
+									<td>	
+									{% for tag in resource.resource_tag %} 
+								<a href="tags?tag={{ tag }}">{{ tag }}</a>
+									{% endfor %}
+									</td>
+										<td>{{ resource.totalReservations }}</td>
+									</tr>
+									{% endfor %}
+								</tbody>
+							</table>
+						</div>
+					</div>
+					
+	<footer class=" footer text-center">
+		<a href="#myPage" title="To Top"> <span
+			class="glyphicon glyphicon-chevron-up"></span>
+		</a>
+		<p>
+			Web Application made by <a
+				href="https://www.linkedin.com/in/abhineetkalra/" title="">Abhineet
+				Kalra</a>
+		</p>
+	</footer>
+</body>
+</html>
+{% endautoescape %}
