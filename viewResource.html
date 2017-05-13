@@ -67,6 +67,7 @@
 									<th align="center">Resource Name</th>
 									<th align="center">Reservation Time</th>
 									<th align="center">Duration in minutes</th>
+									<th align="center">Reservation Details</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -78,6 +79,8 @@
 											reservation.resource_Name }}</a></td>
 									<td>{{ reservation.reservation_StartTime }}</td>
 									<td>{{ reservation.reservation_Duration }}</td>
+									<td><a
+										href="viewReservation?keyVal={{ reservation.primaryKey }}">Details</a></td>
 								</tr>
 								{% endfor %}
 							</tbody>
