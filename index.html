@@ -49,31 +49,34 @@
 					<div class="accordion-heading">
 						<h2>
 							<a class="accordion-toggle" data-toggle="collapse"
-								data-parent="#accordion2" href="#collapseUserResources"> My
+								data-parent="#accordion2" href="#collapseUserReservations"> My Upcoming
 								Reservations </a>
 						</h2>
 					</div>
-					<div id="collapseUserResources" class="accordion-body collapse in">
+					<div id="collapseUserReservations" class="accordion-body collapse in">
 						<HR>
 						<table
 							class="table table-hover bg-white accordion-inner text-center">
 							<thead>
 								<tr>
+									<th align="center">User</th>
 									<th align="center">Resource Name</th>
-									<th align="center">Reserved By</th>
-									<th align="center">Starts From</th>
-									<th align="center">Duration(in minutes)</th>
+									<th align="center">Reservation Time</th>
+									<th align="center">Duration in minutes</th>
+									<th align="center">Reservation Details</th>
 								</tr>
 							</thead>
 							<tbody>
 								{% for reservation in userReservations %}
 								<tr>
+								<td>{{ reservation.reservation_Owner }}</td>
 									<td><a
-										href="viewReservation?keyVal={{ reservation.primaryKey }}">{{
+										href="viewResource?keyVal={{ reservation.resource_PrimaryKey }}">{{
 											reservation.resource_Name }}</a></td>
-									<td>{{ reservation.reservation_Owner }}</td>
 									<td>{{ reservation.reservation_StartTime }}</td>
 									<td>{{ reservation.reservation_Duration }}</td>
+									<td><a
+										href="viewReservation?keyVal={{ reservation.primaryKey }}">Details</a></td>
 								</tr>
 								{% endfor %}
 							</tbody>
@@ -104,7 +107,6 @@
 								<thead>
 									<tr>
 										<th align="center">Resource Name</th>
-										<th align="center">Created By</th>
 										<th align="center">Available From</th>
 										<th align="center">Available Till</th>
 										<th align="center">Last reserved at</th>
@@ -118,7 +120,6 @@
 										<td><a
 											href="viewResource?keyVal={{ resource.primaryKey }}">{{
 												resource.resource_Name }}</a></td>
-										<td>{{ resource.resource_Owner }}</td>
 										<td>{{ resource.resource_StartTime }}</td>
 										<td>{{ resource.resource_EndTime }}</td> 
 										{% if resource.justCreated==1 %}

@@ -249,6 +249,13 @@ class ViewResource(webapp2.RequestHandler):
         #print user.email()
         outputResource=Resource.query(Resource.primaryKey==keyVal).fetch()
         #print outputResource[0].resource_Owner
+        upcomingReservations=[]
+        allReservations=Reservation.query().order(Reservation.reservation_StartTime).fetch()
+        #print filterReservationsOnEndTime(filterReservationsByOwner(allReservations))
+        for reservation in filterReservationsOnEndTime(filterReservationsByOwner(allReservations)):
+            if reservation.resource_PrimaryKey==keyVal:
+                upcomingReservations.append(reservation)
+        #print upcomingReservations
         if str(outputResource[0].resource_Owner) == str(user.email()):
             isEditable=True
         #print isEditable
@@ -258,6 +265,7 @@ class ViewResource(webapp2.RequestHandler):
         template_values = {
             'isEditable': isEditable,
             'outputResource': outputResource,
+            'upcomingReservations':upcomingReservations,
             'user': user,
             'username' : user.nickname().split("@")[0],
             'url': url,

@@ -47,30 +47,35 @@
 			<div class="col-sm-15">
 				<div class="accordion-group">
 					<div class="accordion-heading text-center">
-						<h2>
+						<h3>
 							<a class="accordion-toggle text-center" data-toggle="collapse"
-								data-parent="#accordion2" href="#details"> Resource Details
+								data-parent="#accordion2" href="#details"> Upcoming Reservations for {{ outputResource[0].resource_Name }} ! 
 							</a>
-						</h2>
+						</h3>
 					</div>
 					<div id="details" class="accordion-body collapse in">
 						<HR>
 						<table
 							class="table table-hover bg-white accordion-inner text-center">
-							
+							<thead>
+								<tr>
+									<th align="center">User</th>
+									<th align="center">Resource Name</th>
+									<th align="center">Reservation Time</th>
+									<th align="center">Duration in minutes</th>
+								</tr>
+							</thead>
 							<tbody>
+								{% for reservation in upcomingReservations %}
 								<tr>
-									<td><b>Resource Name</b></td>
-									<td>{{ outputResource[0].resource_Name }}</td>
+								<td>{{ reservation.reservation_Owner }}</td>
+									<td><a
+										href="viewReservation?keyVal={{ reservation.primaryKey }}">{{
+											reservation.resource_Name }}</a></td>
+									<td>{{ reservation.reservation_StartTime }}</td>
+									<td>{{ reservation.reservation_Duration }}</td>
 								</tr>
-								<tr>
-									<td><b>Availabile from</b></td>
-									<td>{{ outputResource[0].resource_StartTime }}</td>
-								</tr>
-								<tr>
-									<td><b>Availabile till</b></td>
-									<td>{{ outputResource[0].resource_EndTime }}</td>
-								</tr>
+								{% endfor %}
 							</tbody>
 						</table>
 					</div>
