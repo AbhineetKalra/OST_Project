@@ -7,18 +7,12 @@
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script
-	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="bootstrap/js/newResourceValidation.js"></script>
 <link rel="stylesheet" type="text/css" href="/bootstrap/css/reserve.css">
 
-<script>
-	function validateForm() {
-		alert(" Availability end time must be filled out");
-		return true;
-	}
-</script>
-
 </head>
+
+
 <body id="myPage" data-spy="scroll" data-target=".navbar"
 	data-offset="60">
 	<nav class="navbar navbar-default navbar-fixed-top">
@@ -51,8 +45,9 @@
 
 
 	<div class="smallPadding lessBottomPadding">
-		<form class="form-horizontal" onsubmit="return validateForm()"
-			action="/addResource" method="post" role="form">
+		<form name="resourceForm" class="form-horizontal"
+			onsubmit="return validateForm()" action="/addResource" method="post"
+			role="form">
 			<div class="form-group">
 				<label class="control-label col-sm-2" for="resourceName">Resource
 					Name</label>

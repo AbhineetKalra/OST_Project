@@ -37,19 +37,20 @@
 		</div>
 	</nav>
 	<div class="black text-center bigPadding">
-		<h1>Resource Share</h1>
+		<font size="22">Resource Share</font><br>
+		<h4>Reservations Managed.</h4>
 	</div>
 
-
 	<!-- Container (About userReservations) -->
-		<div id=userReservations class="container-fluid bg-grey text-center">
+	<div id=userReservations class="container-fluid bg-grey text-center">
 		<div class="row">
 			<div class="col-sm-15">
 				<div class="accordion-group">
 					<div class="accordion-heading">
 						<h2>
 							<a class="accordion-toggle" data-toggle="collapse"
-								data-parent="#accordion2" href="#collapseUserResources"> My Reservations </a>
+								data-parent="#accordion2" href="#collapseUserResources"> My
+								Reservations </a>
 						</h2>
 					</div>
 					<div id="collapseUserResources" class="accordion-body collapse in">
@@ -59,8 +60,8 @@
 							<thead>
 								<tr>
 									<th align="center">Resource Name</th>
-									<th align="center">Created By</th>
-									<th align="center">Available From</th>
+									<th align="center">Reserved By</th>
+									<th align="center">Starts From</th>
 									<th align="center">Duration(in minutes)</th>
 								</tr>
 							</thead>
@@ -68,11 +69,11 @@
 								{% for reservation in userReservations %}
 								<tr>
 									<td><a
-										href="viewResource?keyVal={{ reservation.resource_Name }}">{{
+										href="viewReservation?keyVal={{ reservation.primaryKey }}">{{
 											reservation.resource_Name }}</a></td>
 									<td>{{ reservation.reservation_Owner }}</td>
 									<td>{{ reservation.reservation_StartTime }}</td>
-									<td>{{ reservation.reservation_EndTime }}</td>
+									<td>{{ reservation.reservation_Duration }}</td>
 								</tr>
 								{% endfor %}
 							</tbody>
@@ -105,7 +106,10 @@
 										<th align="center">Resource Name</th>
 										<th align="center">Created By</th>
 										<th align="center">Available From</th>
-										<th align="center">Duration(in minutes)</th>
+										<th align="center">Available Till</th>
+										<th align="center">Last reserved at</th>
+										<th align="center">Tags</th>
+										<th align="center">Total Reservations</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -116,7 +120,14 @@
 												resource.resource_Name }}</a></td>
 										<td>{{ resource.resource_Owner }}</td>
 										<td>{{ resource.resource_StartTime }}</td>
-										<td>{{ resource.resource_EndTime }}</td>
+										<td>{{ resource.resource_EndTime }}</td> 
+										{% if resource.justCreated==1 %}
+										<td>Not Reserved Yet!</td> {% else %}
+										<td>{{ resource.date }}</td> {% endif %}
+										<td>{% for tag in resource.resource_tag %} <a
+											href="tags?tag={{ tag }}">{{ tag }}</a> {% endfor %}
+										</td>
+										<td>{{ resource.totalReservations }}</td>
 									</tr>
 									{% endfor %}
 								</tbody>
@@ -148,7 +159,10 @@
 									<th align="center">Resource Name</th>
 									<th align="center">Created By</th>
 									<th align="center">Available From</th>
-									<th align="center">Duration(in minutes)</th>
+									<th align="center">Available Till</th>
+									<th align="center">Last reserved at</th>
+									<th align="center">Tags</th>
+									<th align="center">Total Reservations</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -160,8 +174,15 @@
 									<td>{{ resource.resource_Owner }}</td>
 									<td>{{ resource.resource_StartTime }}</td>
 									<td>{{ resource.resource_EndTime }}</td>
-								</tr>
-								{% endfor %}
+									{% if resource.justCreated==1 %}
+										<td>Not Reserved Yet!</td> {% else %}
+										<td>{{ resource.date }}</td> {% endif %}
+										<td>{% for tag in resource.resource_tag %} <a
+											href="tags?tag={{ tag }}">{{ tag }}</a> {% endfor %}
+										</td>
+										<td>{{ resource.totalReservations }}</td>
+									</tr>
+									{% endfor %}
 							</tbody>
 						</table>
 					</div>

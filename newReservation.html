@@ -9,8 +9,8 @@
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 <script
 	src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	<script src="bootstrap/js/newReservationValidation.js"></script>	
 <link rel="stylesheet" type="text/css" href="/bootstrap/css/reserve.css">
-
 
 </head>
 <body id="myPage" data-spy="scroll" data-target=".navbar"
@@ -39,33 +39,27 @@
 
 	<div class="black text-center mediumPadding">
 		<BR>
-		<h3>Ok, So Lets Reserve a Resource!</h3>
-		<h5>Now reserving {{ reservingResource[0].resource_Name }}</h5>
+		<h2>Ok, So Let's Reserve a Resource!</h2>
+		<h4>Now reserving: {{ reservingResource }}</h4>
+		<h6>Available From: {{
+			reservingResourceDetails[0].resource_StartTime }}</h6>
+		<h6>Available Till: {{
+			reservingResourceDetails[0].resource_EndTime }}</h6>
 	</div>
 
 
 	<div class="text-center">
 		<div class="accordion-heading">
-			<h2>
+			<h3>
 				<a class="accordion-toggle" data-toggle="collapse"
 					data-parent="#accordion2" href="#collapseAllResources">
 					Rerservation Details </a>
-			</h2>
+			</h3>
 		</div>
 		<div class=" lessBottomPadding accordion-body collapse in"
 			id="collapseAllResources">
 			<form class="form-horizontal" onsubmit="return validateForm()"
 				action="/addReservation" method="post" role="form">
-				<div class="form-group">
-					<label class="control-label col-sm-2 hidden" for="resourceName">Resource
-						Name</label>
-					<div class="col-sm-8">
-						<input type="text" class="form-control hidden" id="resourceName"
-							name="resourceName" placeholder="Enter name of the resource"
-							value="{{ reservingResource[0].resource_Name }}"
-							required="required">
-					</div>
-				</div>
 				<div class="form-group">
 					<label class="control-label col-sm-2" for="startTime">Reservation
 						Start Time:</label>
@@ -74,6 +68,29 @@
 							name="startTime" placeholder="Enter starting time"
 							required="required">
 					</div>
+					<div>
+			<input type="text" class="form-control hidden" name="resourceName"
+			placeholder="Enter name of the resource"
+			value="{{ reservingResource }}" required="required"> 
+			
+			<input type="text" class="form-control hidden" name="resourceKey"
+			placeholder="Enter name of the resource"
+			value="{{ reservingResourceKey }}" required="required"> 
+			
+			<input
+			type="text" class="form-control hidden" id="resourceStartTime" name="resourceStartTime"
+			value="{{ reservingResourceDetails[0].resource_StartTime }}"
+			required="required"> 
+			
+			<input type="text" class="form-control hidden"
+			id="resourceEndTime" name="resourceEndTime"
+			value="{{ reservingResourceDetails[0].resource_EndTime }}"
+			required="required"> 
+			
+			<input type="text" class="form-control hidden"
+			name="resourcePrimaryKey"
+			value="{{ reservingResourceDetails[0].primaryKey }}"
+			required="required"></div>
 				</div>
 				<div class="form-group">
 					<label class="control-label col-sm-2" for="endTime">Reservation
@@ -86,7 +103,7 @@
 				<div class="form-group">
 					<label class="control-label col-sm-2" for="tags">Notes:</label>
 					<div class="col-sm-8">
-						<input type="text" class="form-control" id="tags" name="notes"
+						<input type="text" class="form-control" name="notes"
 							placeholder="Reservation Notes">
 					</div>
 				</div>

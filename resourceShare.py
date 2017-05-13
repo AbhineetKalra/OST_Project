@@ -16,8 +16,8 @@
 
 # [START imports]
 import os
-import urllib
 import random
+import datetime
 
 from google.appengine.api import users
 from google.appengine.ext import ndb
@@ -45,64 +45,60 @@ def filterResourcesByOwner(resourceList):
             returnList.append(resource)
     return returnList        
 
+def filterReservationsOnEndTime(reservationList):
+    returnList=[]
+    for reservation in reservationList:
+        presentDateTime= datetime.datetime.now()- datetime.timedelta(minutes=240)
+        converteddate=datetime.datetime.combine(presentDateTime.date(),datetime.datetime.strptime(reservation.reservation_EndTime,'%H:%M').time())
+        #print datetime.datetime.now().date()
+        #print datetime.datetime.strptime(reservation.reservation_EndTime,'%H:%M').time()
+        #print (converteddate-presentDateTime).total_seconds()
+        if (converteddate-presentDateTime).total_seconds()>0:
+            #print "Yess"
+            returnList.append(reservation)
+        #print returnList
+    return returnList        
+
 def filterReservationsByOwner(reservationList):
     returnList=[]
     for reservation in reservationList:
         if reservation.reservation_Owner == users.get_current_user().email():
             returnList.append(reservation)
-    return returnList        
-
-def guestbook_key(guestbook_name=DEFAULT_GUESTBOOK_NAME):
-    """Constructs a Datastore key for a Guestbook entity.
-
-    We use guestbook_name as the key.
-    """
-    return ndb.Key('Guestbook', guestbook_name)
-
+    return returnList    
 # [START greeting]
-class Author(ndb.Model):
-    """Sub model for representing an author."""
-    identity = ndb.StringProperty(indexed=False)
-    email = ndb.StringProperty(indexed=False)
 
 
-class Greeting(ndb.Model):
-    """A main model for representing an individual Guestbook entry."""
-    author = ndb.StructuredProperty(Author)
-    content = ndb.StringProperty(indexed=False)
-    date = ndb.DateTimeProperty(auto_now_add=True)
 # [END greeting]
 class Resource(ndb.Model):
     resource_Name=ndb.StringProperty(indexed=True)
     resource_Owner=ndb.StringProperty(indexed=True)
-    resource_StartTime=ndb.StringProperty(indexed=True)
-    resource_EndTime=ndb.StringProperty(indexed=True)
-    resource_tag=ndb.StringProperty(indexed=True)
+    resource_StartTime=ndb.StringProperty(indexed=False)
+    resource_EndTime=ndb.StringProperty(indexed=False)
+    resource_tag=ndb.StringProperty(repeated=True)
     date = ndb.DateTimeProperty(auto_now_add=True)
     primaryKey=ndb.StringProperty(indexed=True)
+    resource_Duration=ndb.IntegerProperty(indexed=True)
+    totalReservations=ndb.IntegerProperty(indexed=False)
+    justCreated=ndb.IntegerProperty(indexed=False)
     
 class Reservation(ndb.Model):
     resource_Name=ndb.StringProperty(indexed=True)
+    resource_PrimaryKey=ndb.StringProperty(indexed=True)
     reservation_Owner=ndb.StringProperty(indexed=True)
     reservation_StartTime=ndb.StringProperty(indexed=True)
     reservation_EndTime=ndb.StringProperty(indexed=True)
     reservation_Notes=ndb.StringProperty(indexed=True)
-    date = ndb.DateTimeProperty(auto_now_add=True)
+    date = ndb.DateTimeProperty(auto_now_add=False)
     primaryKey=ndb.StringProperty(indexed=True)
+    reservation_Duration=ndb.IntegerProperty(indexed=True)
 
 # [START main_page]
 class MainPage(webapp2.RequestHandler):
 
     def get(self):
-        guestbook_name = self.request.get('guestbook_name',
-                                          DEFAULT_GUESTBOOK_NAME)
-        greetings_query = Greeting.query(
-            ancestor=guestbook_key(guestbook_name)).order(-Greeting.date)
-        greetings = greetings_query.fetch(10)
-        
         resource_query = Resource.query().order(-Resource.date)
         resources = resource_query.fetch()
-        reservationList=Reservation.query().fetch()
+        reservationList=Reservation.query().order(Reservation.reservation_StartTime).fetch()
         user = users.get_current_user()
         if user:
             url = users.create_logout_url(self.request.uri)
@@ -110,18 +106,16 @@ class MainPage(webapp2.RequestHandler):
         else:
             url = users.create_login_url(self.request.uri)
             url_linktext = 'Login'
-        print resources
+        #print resources
         filteredResources=filterResourcesByOwner(resources)
-        print filteredResources
-        filteredReservations=filterReservationsByOwner(reservationList)
-        print filteredReservations
+        #print filteredResources
+        filteredReservations=filterReservationsOnEndTime(filterReservationsByOwner(reservationList))
+        #print filteredReservations
         template_values = {
             'user': user,
-            'greetings': greetings,
             'resources': resources,
             'userResources': filteredResources,
             'userReservations': filteredReservations,
-            'guestbook_name': urllib.quote_plus(guestbook_name),
             'url': url,
             'url_linktext': url_linktext,
             'username' : user.nickname().split("@")[0]
@@ -129,32 +123,6 @@ class MainPage(webapp2.RequestHandler):
         template = JINJA_ENVIRONMENT.get_template('index.html')
         self.response.write(template.render(template_values))
 # [END main_page]
-
-
-# [START guestbook]
-class Guestbook(webapp2.RequestHandler):
-
-    def post(self):
-        # We set the same parent key on the 'Greeting' to ensure each
-        # Greeting is in the same entity group. Queries across the
-        # single entity group will be consistent. However, the write
-        # rate to a single entity group should be limited to
-        # ~1/second.
-        guestbook_name = self.request.get('guestbook_name',
-                                          DEFAULT_GUESTBOOK_NAME)
-        greeting = Greeting(parent=guestbook_key(guestbook_name))
-
-        if users.get_current_user():
-            greeting.author = Author(
-                    identity=users.get_current_user().user_id(),
-                    email=users.get_current_user().email())
-
-        greeting.content = self.request.get('content')
-        greeting.put()
-
-        query_params = {'guestbook_name': guestbook_name}
-        self.redirect('/?' + urllib.urlencode(query_params))
-# [END guestbook]
 
     
 class AddResource(webapp2.RequestHandler):
@@ -165,24 +133,28 @@ class AddResource(webapp2.RequestHandler):
             resource.resource_Name = self.request.get('resourceName')
             resource.resource_StartTime = self.request.get('startTime')
             resource.resource_EndTime = self.request.get('endTime')
-            #print str(self.request.get('endTime'))
+            differenceTime= datetime.datetime.strptime(self.request.get('endTime'),'%H:%M')-datetime.datetime.strptime(self.request.get('startTime'),'%H:%M')
+            resource.resource_Duration= int((differenceTime.total_seconds())/60)
             #print self.request.get('startTime')
-            resource.resource_tag = self.request.get('tags')
+            tagList=self.request.get('tags').replace(';',',').split(',')
+            filteredTagList=[]
+            for tag in tagList:
+                t=tag.strip()
+                if len(t)>0:
+                    filteredTagList.append(t)
+                    #print "test "+t
+                
+                
+            resource.resource_tag = filteredTagList
             resource.primaryKey=str(random.randint(100000,1000000))
             resource.resource_Owner=str(user.email())
+            resource.totalReservations=0
+            resource.justCreated=1
+            presentDateTime1= datetime.datetime.now()- datetime.timedelta(minutes=240)
+            presentDateTime= datetime.datetime.combine(presentDateTime1.date(),datetime.datetime.strptime("00:00",'%H:%M').time())
+            resource.date=presentDateTime
             resource.put()
-        url = users.create_logout_url(self.request.uri)
-        url_linktext = 'Logout'
-        template_values = {
-            'isSuccess': '1',
-            'user': user,
-            'username' : user.nickname().split("@")[0],
-            'url': url,
-            'url_linktext': url_linktext,
-            }
-        
-        template = JINJA_ENVIRONMENT.get_template('newResource.html')
-        self.response.write(template.render(template_values))
+            self.redirect('/')
         
     def get(self):
         user = users.get_current_user()
@@ -201,29 +173,30 @@ class AddReservation(webapp2.RequestHandler):
     def post(self):
         user = users.get_current_user()
         if user:
-            reservation = Reservation()            
+            reservation = Reservation()
             reservation.resource_Name = self.request.get('resourceName')
+            reservation.resource_PrimaryKey = self.request.get('resourceKey')
+            #print self.request.get('resourcePrimaryKey')
+            reservingResourceDetails=Resource.query(Resource.primaryKey==str(self.request.get('resourcePrimaryKey'))).fetch()
             reservation.reservation_StartTime = self.request.get('startTime')
             reservation.reservation_EndTime = self.request.get('endTime')
-            print str(self.request.get('endTime'))
-            print self.request.get('startTime')
-            reservation.reservation_Notes = self.request.get('Notes')
+            #print str(self.request.get('endTime'))
+            #print self.request.get('startTime')
+            #print reservingResourceDetails;
+            reservation.reservation_Notes = self.request.get('notes')
             reservation.primaryKey=str(random.randint(100000,1000000))
             reservation.reservation_Owner=str(user.email())
+            differenceTime= datetime.datetime.strptime(self.request.get('endTime'),'%H:%M')-datetime.datetime.strptime(self.request.get('startTime'),'%H:%M')
+            reservation.reservation_Duration= int((differenceTime.total_seconds())/60)
+            rquery=Resource.query(Resource.primaryKey==str(self.request.get('resourcePrimaryKey'))).fetch()
+            presentDateTime= datetime.datetime.now()- datetime.timedelta(minutes=240)
+
+            rquery[0].date=presentDateTime
+            rquery[0].totalReservations+=1
+            rquery[0].justCreated=0
+            rquery[0].put()
             reservation.put()
-        url = users.create_logout_url(self.request.uri)
-        url_linktext = 'Logout'
-        template_values = {
-            'isSuccess': '1',
-            'user': user,
-            'reservingResource':self.request.get('resourceName'),
-            'username' : user.nickname().split("@")[0],
-            'url': url,
-            'url_linktext': url_linktext,
-            }
-        
-        template = JINJA_ENVIRONMENT.get_template('newReservation.html')
-        self.response.write(template.render(template_values))
+        self.redirect('/')
         
     def get(self):
         
@@ -235,7 +208,9 @@ class AddReservation(webapp2.RequestHandler):
         template_values = {
             'user': user,
             'username' : user.nickname().split("@")[0],
-            'reservingResource':reservingResource,
+            'reservingResource':reservingResource[0].resource_Name,
+            'reservingResourceDetails':reservingResource,
+            'reservingResourceKey': reservingResource[0].primaryKey,
             'url': url,
             'url_linktext': url_linktext,
             }
@@ -276,10 +251,10 @@ class ViewResource(webapp2.RequestHandler):
         #print outputResource[0].resource_Owner
         if str(outputResource[0].resource_Owner) == str(user.email()):
             isEditable=True
-        print isEditable
+        #print isEditable
         url = users.create_logout_url(self.request.uri)
         url_linktext = 'Logout'
-        print outputResource
+        #print outputResource
         template_values = {
             'isEditable': isEditable,
             'outputResource': outputResource,
@@ -291,12 +266,121 @@ class ViewResource(webapp2.RequestHandler):
         template = JINJA_ENVIRONMENT.get_template('viewResource.html')
         self.response.write(template.render(template_values))
 
+class ViewReservation(webapp2.RequestHandler):
+    def post(self):
+        user = users.get_current_user()
+        if user:
+            resource = Resource()            
+            resource.resource_Name = self.request.get('resourceName')
+            resource.resource_StartTime = self.request.get('startTime')
+            resource.resource_EndTime = self.request.get('endTime')
+            resource.resource_tag = self.request.get('notes')
+            resource.resource_Owner=str(user.email())
+            resource.put()
+        url = users.create_logout_url(self.request.uri)
+        url_linktext = 'Logout'
+        template_values = {
+            'isSuccess': '1',
+            'user': user,
+            'username' : user.nickname().split("@")[0],
+            'url': url,
+            'url_linktext': url_linktext,
+            }
+        
+        template = JINJA_ENVIRONMENT.get_template('newResource.html')
+        self.response.write(template.render(template_values))
+        
+    def get(self):
+        user = users.get_current_user()
+        isEditable=False
+        keyVal=self.request.get('keyVal')
+        #print keyVal
+        #print user.email()
+        outputReservation=Reservation.query(Reservation.primaryKey==keyVal).fetch()
+        #print outputResource[0].resource_Owner
+        if str(outputReservation[0].reservation_Owner) == str(user.email()):
+            isEditable=True
+        url = users.create_logout_url(self.request.uri)
+        url_linktext = 'Logout'
+        #print outputReservation
+        template_values = {
+            'isEditable': isEditable,
+            'outputReservation': outputReservation,
+            'user': user,
+            'username' : user.nickname().split("@")[0],
+            'url': url,
+            'url_linktext': url_linktext,
+        }
+        template = JINJA_ENVIRONMENT.get_template('viewReservation.html')
+        self.response.write(template.render(template_values))
+        
+class EditResource(webapp2.RequestHandler):
+    def post(self):
+        user = users.get_current_user()
+        if user:
+            rquery=Resource.query(Resource.primaryKey==str(self.request.get('resourceKey'))).fetch()
+            rquery[0].resource_Name = self.request.get('resourceName')
+            rquery[0].resource_StartTime = self.request.get('startTime')
+            rquery[0].resource_EndTime = self.request.get('endTime')
+            differenceTime= datetime.datetime.strptime(self.request.get('endTime'),'%H:%M')-datetime.datetime.strptime(self.request.get('startTime'),'%H:%M')
+            rquery[0].resource_Duration= int((differenceTime.total_seconds())/60)
+            #print self.request.get('startTime')
+            rquery[0].resource_tag = self.request.get('tags')
+            resourceKey=rquery[0].primaryKey
+            reservationQuery=Reservation.query(Reservation.resource_PrimaryKey==str(resourceKey)).fetch()
+            for res in reservationQuery:
+                res.resource_Name=self.request.get('resourceName')
+                res.put()
+            rquery[0].put()
+            
+        self.redirect('/')
+
+class DeleteReservation(webapp2.RequestHandler):
+    def post(self):
+        user = users.get_current_user()
+        if user:
+            rquery=Reservation.query(Reservation.primaryKey==str(self.request.get('reservationKey'))).fetch()
+            rquery[0].resource_tag = self.request.get('tags')
+            res=Resource.query(Resource.primaryKey==rquery[0].resource_PrimaryKey).fetch()
+            res[0].totalReservations-=1;
+            res[0].put()
+            rquery[0].key.delete()
+            
+        self.redirect('/')
+        
+class Tags(webapp2.RequestHandler):
+    def get(self):
+        user = users.get_current_user()
+        tagName=self.request.get('tag')
+        allResources=Resource.query().fetch()
+        tagresources=[];
+        for resource in allResources:
+            if tagName in resource.resource_tag:
+                tagresources.append(resource)
+                
+        url = users.create_logout_url(self.request.uri)
+        url_linktext = 'Logout'
+        template_values = {
+            'user': user,
+            'username' : user.nickname().split("@")[0],
+            'url': url,
+            'url_linktext': url_linktext,
+            'tagName':tagName,
+            'tagResources': tagresources,
+        }
+        template = JINJA_ENVIRONMENT.get_template('tag.html')
+        self.response.write(template.render(template_values))        
+             
 # [START app]
 app = webapp2.WSGIApplication([
     ('/', MainPage),
-    ('/sign', Guestbook),
+    ('/viewReservation',ViewReservation),
     ('/addResource',AddResource),
     ('/addReservation',AddReservation),
-    ('/viewResource',ViewResource)
+    ('/viewResource',ViewResource),
+    ('/deleteReservation',DeleteReservation),
+    ('/tags',Tags),
+    ('/editResource',EditResource)
 ], debug=True)
 # [END app]
+
