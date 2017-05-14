@@ -116,7 +116,6 @@
 										<th align="center">Last reserved at</th>
 										<th align="center">Tags</th>
 										<th align="center">Total Reservations</th>
-										<th align="center">RSS</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -134,8 +133,6 @@
 											href="tags?tag={{ tag }}">{{ tag }}</a> {% endfor %}
 										</td>
 										<td>{{ resource.totalReservations }}</td>
-										<td><a href="rss?keyVal={{ resource.primaryKey }}"><img
-												src="/bootstrap/img/rss.png" width="30" height="25"></a></td>
 									</tr>
 									{% endfor %}
 								</tbody>
@@ -171,7 +168,6 @@
 									<th align="center">Last reserved at</th>
 									<th align="center">Tags</th>
 									<th align="center">Total Reservations</th>
-									<th align="center">RSS</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -190,8 +186,6 @@
 										href="tags?tag={{ tag }}">{{ tag }}</a> {% endfor %}
 									</td>
 									<td>{{ resource.totalReservations }}</td>
-									<td><a href="rss?keyVal={{ resource.primaryKey }}"><img
-											src="/bootstrap/img/rss.png" width="30" height="25"></a></td>
 								</tr>
 								{% endfor %}
 							</tbody>

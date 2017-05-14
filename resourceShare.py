@@ -420,33 +420,6 @@ class Tags(webapp2.RequestHandler):
         self.response.write(template.render(template_values))        
 # [END Tags]
 
-# [START RSS]
-'''class to show the RSS code for a particular resource'''
-class RSS(webapp2.RequestHandler):
-    def get(self):
-        user = users.get_current_user()
-        pkey = self.request.get('keyVal')
-        allReservations = Reservation.query().fetch()
-        rssResource = Resource.query(pkey == Resource.primaryKey).fetch()
-        selectedReservations = [];
-        for reservation in allReservations:
-            if reservation.resource_PrimaryKey == pkey:
-                selectedReservations.append(reservation)
-        #print rssResource
-        #print selectedReservations
-        url = users.create_logout_url(self.request.uri)
-        url_linktext = 'Logout'
-        template_values = {
-            'user': user,
-            'username' : user.nickname().split("@")[0],
-            'url': url,
-            'url_linktext': url_linktext,
-            'selectedReservations': selectedReservations,
-            'resource': rssResource[0],
-        }
-        template = JINJA_ENVIRONMENT.get_template('rss.html')
-        self.response.write(template.render(template_values))       
-# [END RSS]
 class Search(webapp2.RequestHandler):
     def get(self):
         user = users.get_current_user()
@@ -496,7 +469,6 @@ app = webapp2.WSGIApplication([
     ('/deleteReservation', DeleteReservation),
     ('/tags', Tags),
     ('/editResource', EditResource),
-    ('/rss', RSS),
     ('/searchResource',Search)
 ], debug=True)
 # [END app]

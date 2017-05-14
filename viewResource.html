@@ -45,7 +45,6 @@
 			By:</b> {{ outputResource[0].resource_Owner }} <BR> <b>Last
 			Reserved At:</b> {% if outputResource[0].justCreated==1 %} Not Reserved
 		Yet!<BR> {% else %} {{ outputResource[0].date }}<BR> {% endif %}
-		<a href="rss?keyVal={{ outputResource[0].primaryKey }}"><img src="/bootstrap/img/rss.png" width="30" height="30"></a>
 	</div>
 
 	<div id=resourceDetails class="bg-grey">
