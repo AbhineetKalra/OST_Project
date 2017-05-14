@@ -29,10 +29,10 @@
 			<div class="collapse navbar-collapse" id="myNavbar">
 				<ul class="nav navbar-nav navbar-right">
 					<li><a href="#userReservations"><B>My Reservations</B></a></li>
-					<li><a href="#userResources"><B>My Resources</B></a></li>
-					{% if showFull %}
-					<li><a href="#allResources"><B>All Resources</B></a></li>
-					{% endif %}
+					<li><a href="#userResources"><B>My Resources</B></a></li> {% if
+					showFull %}
+					<li><a href="#allResources"><B>All Resources</B></a></li> {% endif
+					%}
 					<li><a href="{{ url|safe }}"><B>{{ url_linktext }}</B></a></li>
 				</ul>
 			</div>
@@ -51,11 +51,12 @@
 					<div class="accordion-heading">
 						<h2>
 							<a class="accordion-toggle" data-toggle="collapse"
-								data-parent="#accordion2" href="#collapseUserReservations"> My Upcoming
-								Reservations </a>
+								data-parent="#accordion2" href="#collapseUserReservations">
+								My Upcoming Reservations </a>
 						</h2>
 					</div>
-					<div id="collapseUserReservations" class="accordion-body collapse in">
+					<div id="collapseUserReservations"
+						class="accordion-body collapse in">
 						<HR>
 						<table
 							class="table table-hover bg-white accordion-inner text-center">
@@ -71,7 +72,7 @@
 							<tbody>
 								{% for reservation in userReservations %}
 								<tr>
-								<td>{{ reservation.reservation_Owner }}</td>
+									<td>{{ reservation.reservation_Owner }}</td>
 									<td><a
 										href="viewResource?keyVal={{ reservation.resource_PrimaryKey }}">{{
 											reservation.resource_Name }}</a></td>
@@ -114,6 +115,7 @@
 										<th align="center">Last reserved at</th>
 										<th align="center">Tags</th>
 										<th align="center">Total Reservations</th>
+										<th align="center">RSS</th>
 									</tr>
 								</thead>
 								<tbody>
@@ -123,14 +125,16 @@
 											href="viewResource?keyVal={{ resource.primaryKey }}">{{
 												resource.resource_Name }}</a></td>
 										<td>{{ resource.resource_StartTime }}</td>
-										<td>{{ resource.resource_EndTime }}</td> 
-										{% if resource.justCreated==1 %}
+										<td>{{ resource.resource_EndTime }}</td> {% if
+										resource.justCreated==1 %}
 										<td>Not Reserved Yet!</td> {% else %}
 										<td>{{ resource.date }}</td> {% endif %}
 										<td>{% for tag in resource.resource_tag %} <a
 											href="tags?tag={{ tag }}">{{ tag }}</a> {% endfor %}
 										</td>
 										<td>{{ resource.totalReservations }}</td>
+										<td><a
+										href="rss?keyVal={{ resource.primaryKey }}"><img src="/bootstrap/img/rss.png" width="30" height="25"></a></td>
 									</tr>
 									{% endfor %}
 								</tbody>
@@ -141,7 +145,7 @@
 			</div>
 		</div>
 	</div>
-{% if showFull %}
+	{% if showFull %}
 	<div id=allResources class="container-fluid bg-grey text-center">
 		<div class="row">
 			<div class="col-sm-15">
@@ -166,6 +170,7 @@
 									<th align="center">Last reserved at</th>
 									<th align="center">Tags</th>
 									<th align="center">Total Reservations</th>
+									<th align="center">RSS</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -176,16 +181,18 @@
 											resource.resource_Name }}</a></td>
 									<td>{{ resource.resource_Owner }}</td>
 									<td>{{ resource.resource_StartTime }}</td>
-									<td>{{ resource.resource_EndTime }}</td>
-									{% if resource.justCreated==1 %}
-										<td>Not Reserved Yet!</td> {% else %}
-										<td>{{ resource.date }}</td> {% endif %}
-										<td>{% for tag in resource.resource_tag %} <a
-											href="tags?tag={{ tag }}">{{ tag }}</a> {% endfor %}
-										</td>
-										<td>{{ resource.totalReservations }}</td>
-									</tr>
-									{% endfor %}
+									<td>{{ resource.resource_EndTime }}</td> {% if
+									resource.justCreated==1 %}
+									<td>Not Reserved Yet!</td> {% else %}
+									<td>{{ resource.date }}</td> {% endif %}
+									<td>{% for tag in resource.resource_tag %} <a
+										href="tags?tag={{ tag }}">{{ tag }}</a> {% endfor %}
+									</td>
+									<td>{{ resource.totalReservations }}</td>
+									<td><a
+										href="rss?keyVal={{ resource.primaryKey }}"><img src="/bootstrap/img/rss.png" width="30" height="25"></a></td>
+								</tr>
+								{% endfor %}
 							</tbody>
 						</table>
 					</div>
@@ -199,7 +206,7 @@
 				value="Add a new Resource" onclick="location.href='/addResource'">
 		</div>
 	</div>
-{% endif %}
+	{% endif %}
 	<footer class=" footer text-center">
 		<a href="#myPage" title="To Top"> <span
 			class="glyphicon glyphicon-chevron-up"></span>
