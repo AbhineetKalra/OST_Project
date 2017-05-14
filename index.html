@@ -33,6 +33,7 @@
 					showFull %}
 					<li><a href="#allResources"><B>All Resources</B></a></li> {% endif
 					%}
+					<li><a href="#search"><b>Search</b></a></li>
 					<li><a href="{{ url|safe }}"><B>{{ url_linktext }}</B></a></li>
 				</ul>
 			</div>
@@ -133,8 +134,8 @@
 											href="tags?tag={{ tag }}">{{ tag }}</a> {% endfor %}
 										</td>
 										<td>{{ resource.totalReservations }}</td>
-										<td><a
-										href="rss?keyVal={{ resource.primaryKey }}"><img src="/bootstrap/img/rss.png" width="30" height="25"></a></td>
+										<td><a href="rss?keyVal={{ resource.primaryKey }}"><img
+												src="/bootstrap/img/rss.png" width="30" height="25"></a></td>
 									</tr>
 									{% endfor %}
 								</tbody>
@@ -189,8 +190,8 @@
 										href="tags?tag={{ tag }}">{{ tag }}</a> {% endfor %}
 									</td>
 									<td>{{ resource.totalReservations }}</td>
-									<td><a
-										href="rss?keyVal={{ resource.primaryKey }}"><img src="/bootstrap/img/rss.png" width="30" height="25"></a></td>
+									<td><a href="rss?keyVal={{ resource.primaryKey }}"><img
+											src="/bootstrap/img/rss.png" width="30" height="25"></a></td>
 								</tr>
 								{% endfor %}
 							</tbody>
@@ -206,7 +207,73 @@
 				value="Add a new Resource" onclick="location.href='/addResource'">
 		</div>
 	</div>
+	<div id="search" class="container-fluid blue">
+		<div class="row">
+			<div class="col-sm-15">
+				<div class="accordion-group">
+					<div class="accordion-heading text-center in">
+						<h2>
+							<u> <a class="accordion-toggle" data-toggle="collapse"
+								data-parent="#accordion2" href="#collapseSearch"> Search
+									Resources </a></u>
+						</h2>
+					</div>
+					<div id="collapseSearch" class="accordion-body collapse in">
+						<BR> <BR>
+						<div class="list-group">
+							<u><a class="accordion-toggle" data-toggle="collapse"
+								data-parent="#accordion2" href="#collapseTextSearch">
+									<h3>Search Resources By Name</h3>
+							</a></u>
+							<div id="collapseTextSearch" class="accordion-body collapse ">
+								<form name="resourceForm" class="form-horizontal"
+									action="/searchResource" method="get" role="form">
+									<input name="type" id="type" class="hidden" value="name">
+									<BR> <input id="name" name="name" type="text"
+										name="search"
+										placeholder="Enter text to search by name(case-insensitive)">
+									<button class="btn btn-primary text-center" type="submit"
+										value="Search" style="height: 53px; width: 130px">Search</button>
+								</form>
+							</div>
+							<BR> <BR> <u><a class="accordion-toggle"
+								data-toggle="collapse" data-parent="#accordion2"
+								href="#collapseDurationSearch"><h3>Search Resources By
+										Time</h3> </a></u>
+							<div id="collapseDurationSearch" class="accordion-body collapse ">
+
+								<form name="resourceForm" class="form-horizontal"
+									action="/searchResource" method="get" role="form">
+									<input name="type" id="type" class="hidden" value="time">
+									<BR> <label class="control-label" for="startTime"><Font
+										color="white">Avaliable From:</Font></label> <input
+										type="time" class="form-control col-sm-3" id="startTime"
+										name="startTime" placeholder="Enter starting time"
+										required="required"> <BR> <label
+										class="control-label" for="endTime"> <Font
+										color="white">Duration:</Font></label>
+									<div>
+										<input type="text" name="duration" class="form-control"
+											id="duration"
+											placeholder="Enter the duration in minutes"
+											required="required">
+									</div>
+									<BR>
+									<div class="form-group">
+										<div class="col-sm-offset-2 col-sm-8 text-center">
+											<button type="submit" class="btn btn-primary text-center">Submit</button>
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 	{% endif %}
+
 	<footer class=" footer text-center">
 		<a href="#myPage" title="To Top"> <span
 			class="glyphicon glyphicon-chevron-up"></span>

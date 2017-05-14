@@ -3,6 +3,10 @@
 	color: #fff;
 }
 
+.blue{
+	background-image: url("/bootstrap/img/1.jpg");
+}
+
 .black-body {
 	background-image: url("/bootstrap/img/2.jpg");
 	color: #fff;
@@ -44,6 +48,10 @@ table.blackTable>thead>tr>th {
 	border-color: #474747;
 }
 
+#search input.text {
+	color: #fff
+}
+
 table.blackTable>tbody>tr>td {
 	border-color: #474747;
 }
@@ -62,6 +70,24 @@ table.blackTable>tbody>tr>td {
 	padding: 20px 50px;
 }
 
+#collapseTextSearch input[type=text] {
+    width: 200px;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    padding: 12px 20px 12px 40px;
+    -webkit-transition: width 0.4s ease-in-out;
+    transition: width 0.4s ease-in-out;
+}
+#collapseTextSearch input[type=text]:focus {
+    width: 80%;
+    color: #fffff;
+}
+
+#search a:link {
+	color:white
+}
 footer .glyphicon {
 	font-size: 20px;
 	margin-bottom: 20px;

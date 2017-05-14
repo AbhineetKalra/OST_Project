@@ -20,6 +20,7 @@ import random
 import datetime
 
 from google.appengine.api import users
+from google.appengine.api import mail
 from google.appengine.ext import ndb
 
 import jinja2
@@ -211,6 +212,15 @@ class AddReservation(webapp2.RequestHandler):
             rquery[0].justCreated = 0
             rquery[0].put()
             reservation.put()
+            #print user.email()
+            #print self.request.get('resourceName')
+            #print self.request.get('startTime')
+            #print self.request.get('duration')
+        message=mail.EmailMessage(sender="ak5345@nyu.edu",
+                    to=str(user.email()),
+                    subject="ResourceShare: We have reserved "+self.request.get('resourceName')+"for you.",
+                    body = "Greetings! As per your request we have reserved"+self.request.get('resourceName')+"for you. The reservation starts at "+self.request.get('startTime')+" for "+self.request.get('duration')+"minutes.")
+        message.send()
         self.redirect('/')
         
     def get(self):
@@ -422,8 +432,8 @@ class RSS(webapp2.RequestHandler):
         for reservation in allReservations:
             if reservation.resource_PrimaryKey == pkey:
                 selectedReservations.append(reservation)
-        print rssResource
-        print selectedReservations
+        #print rssResource
+        #print selectedReservations
         url = users.create_logout_url(self.request.uri)
         url_linktext = 'Logout'
         template_values = {
@@ -437,6 +447,41 @@ class RSS(webapp2.RequestHandler):
         template = JINJA_ENVIRONMENT.get_template('rss.html')
         self.response.write(template.render(template_values))       
 # [END RSS]
+class Search(webapp2.RequestHandler):
+    def get(self):
+        user = users.get_current_user()
+        searchString = self.request.get('name')
+        ty=self.request.get('type')
+        #print searchString
+        #print ty
+        allResources = Resource.query().fetch()
+        selectedResources = [];
+        if ty=="name":
+            for resource in allResources:
+                if searchString.lower() in resource.resource_Name.lower():
+                    selectedResources.append(resource)
+        if ty=="time":
+            endTime = str((datetime.datetime.strptime(self.request.get('startTime'), '%H:%M') + datetime.timedelta(minutes=(int(self.request.get('duration'))))))
+            times = endTime.split(":")
+            #print times[0].split(" ")[1] + ":" + times[1]
+            final=times[0].split(" ")[1] + ":" + times[1]
+            for resource in allResources:
+                if int(resource.resource_StartTime.replace(":",""))<=int(self.request.get('startTime').replace(":","")):
+                    if int(resource.resource_EndTime.replace(":",""))>=int(final.replace(":","")):
+                        selectedResources.append(resource)
+        url = users.create_logout_url(self.request.uri)
+        url_linktext = 'Logout'
+        template_values = {
+            'user': user,
+            'username' : user.nickname().split("@")[0],
+            'url': url,
+            'url_linktext': url_linktext,
+            'selectedResources': selectedResources,
+            'searchString':searchString,
+            'type':ty,
+        }
+        template = JINJA_ENVIRONMENT.get_template('search.html')
+        self.response.write(template.render(template_values))    
 
 # [START app]
 app = webapp2.WSGIApplication([
@@ -448,7 +493,8 @@ app = webapp2.WSGIApplication([
     ('/deleteReservation', DeleteReservation),
     ('/tags', Tags),
     ('/editResource', EditResource),
-    ('/rss', RSS)
+    ('/rss', RSS),
+    ('/searchResource',Search)
 ], debug=True)
 # [END app]
 
