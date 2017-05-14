@@ -341,8 +341,13 @@ class EditResource(webapp2.RequestHandler):
             rquery[0].resource_EndTime = self.request.get('endTime')
             differenceTime= datetime.datetime.strptime(self.request.get('endTime'),'%H:%M')-datetime.datetime.strptime(self.request.get('startTime'),'%H:%M')
             rquery[0].resource_Duration= int((differenceTime.total_seconds())/60)
-            #print self.request.get('startTime')
-            rquery[0].resource_tag = self.request.get('tags')
+            tagList=self.request.get('tags').replace(';',',').split(',')
+            filteredTagList=[]
+            for tag in tagList:
+                t=tag.strip()
+                if len(t)>0:
+                    filteredTagList.append(t)
+            rquery[0].resource_tag = filteredTagList
             resourceKey=rquery[0].primaryKey
             reservationQuery=Reservation.query(Reservation.resource_PrimaryKey==str(resourceKey)).fetch()
             for res in reservationQuery:
