@@ -39,7 +39,12 @@
 
 	<div class="black text-center mediumPadding">
 		<BR>
+		{% if type=="name" %}
 		<h2>Resources Containing "{{ searchString }}" in Resource name</h2>
+		{% endif %}
+		{% if type=="time" %}
+		<h2>Resources available from {{ startTime }} to {{ endTime }}</h2>
+		{% endif %}
 	</div>
 
 

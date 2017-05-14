@@ -456,6 +456,7 @@ class Search(webapp2.RequestHandler):
         #print ty
         allResources = Resource.query().fetch()
         selectedResources = [];
+        final=""
         if ty=="name":
             for resource in allResources:
                 if searchString.lower() in resource.resource_Name.lower():
@@ -478,6 +479,8 @@ class Search(webapp2.RequestHandler):
             'url_linktext': url_linktext,
             'selectedResources': selectedResources,
             'searchString':searchString,
+            'startTime':self.request.get('startTime'),
+            'endTime':final,
             'type':ty,
         }
         template = JINJA_ENVIRONMENT.get_template('search.html')
