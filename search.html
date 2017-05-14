@@ -2,7 +2,7 @@
 {% autoescape true %}
 <html>
 <head>
-<title>RSS feed</title>
+<title>Search Results</title>
 <link rel="stylesheet"
 	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
 <script
@@ -39,7 +39,12 @@
 
 	<div class="black text-center mediumPadding">
 		<BR>
-		<h2>RSS Code For {{ resource.resource_Name }} Resource.</h2>
+		{% if type=="name" %}
+		<h2>Resources Containing "{{ searchString }}" in Resource name</h2>
+		{% endif %}
+		{% if type=="time" %}
+		<h2>Resources available from {{ startTime }} to {{ endTime }}</h2>
+		{% endif %}
 	</div>
 
 
@@ -47,42 +52,50 @@
 		<div class="accordion-heading">
 			<h3>
 				<a class="accordion-toggle" data-toggle="collapse"
-					data-parent="#accordion2" href="#collapseAllResources"> RSS for
-					{{ resource.resource_Name }} </a>
+					data-parent="#accordion2" href="#collapseAllResources">
+					Search Results </a>
 			</h3>
 		</div>
-	</div>
-	<div class=" lessBottomPadding accordion-body collapse in"
-		id="collapseAllResources">
-		<BR>
-		<div>
-			<pre class="pre-scrollable">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; ?&gt;
-&lt;rss version=&quot;2.0&quot;&gt;
-
-&lt;channel&gt;
-  &lt;title&gt;RSS for {{ resource.resource_Name }}&lt;/title&gt;
-  &lt;link&gt;&lt;a href=&quot;/viewResource?keyVal={{ resource.primaryKey}}&quot;&gt;&lt;/link&gt;
-  &lt;Resource&gt;
-    &lt;Name&gt; {{ resource.resource_Name }} &lt;/Name&gt;
-    &lt;PrimaryKey&gt;{{ resource.primaryKey }} &lt;/PrimaryKey&gt;
-    {% for reservation in selectedReservations %}
-    &lt;Reservation&gt;
-        &lt;primaryKey&gt; {{ reservation.primaryKey }} &lt;/primaryKey&gt;
-        &lt;reservationOwner&gt; {{ reservation.reservation_Owner }} &lt;/reservationOwner&gt;
-        &lt;reservationDuration&gt; {{ reservation.reservation_Duration }} &lt;/reservationDuration&gt;
-        &lt;reservationStartTime&gt; {{ reservation.reservation_StartTime }} &lt;/reservationStartTime&gt;
-        &lt;reservationEndTime&gt; {{ reservation.reservation_EndTime  }} &lt;/reservationEndTime&gt;
-        &lt;reservationNotes&gt; {{ reservation.reservation_Notes }} &lt;/reservationNotes&gt;
-    &lt;/Reservation&gt;
-    {% endfor %}
-    &lt;/Reservations&gt;
-  &lt;/Resource&gt;
-&lt;/channel&gt;
-
-&lt;/rss&gt;</pre>
+		<div class=" lessBottomPadding accordion-body collapse in"
+			id="collapseAllResources">
+			<BR>
+			<table class="table accordion-inner text-center ">
+				<thead>
+					<tr>
+						<th align="center">Resource Name</th>
+						<th align="center">Created By</th>
+						<th align="center">Available From</th>
+						<th align="center">Available Till</th>
+						<th align="center">Last reserved at</th>
+						<th align="center">Tags</th>
+						<th align="center">Total Reservations</th>
+						<th align="center">RSS</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for resource in selectedResources %}
+					<tr>
+						<td><a href="viewResource?keyVal={{ resource.primaryKey }}">{{
+								resource.resource_Name }}</a></td>
+						<td>{{ resource.resource_Owner }}</td>
+						<td>{{ resource.resource_StartTime }}</td>
+						<td>{{ resource.resource_EndTime }}</td> {% if
+						resource.justCreated==1 %}
+						<td>Not Reserved Yet!</td> {% else %}
+						<td>{{ resource.date }}</td> {% endif %}
+						<td>{% for tag in resource.resource_tag %} <a
+							href="tags?tag={{ tag }}">{{ tag }}</a> {% endfor %}
+						</td>
+						<td>{{ resource.totalReservations }}</td>
+						<td><a href="rss?keyVal={{ resource.primaryKey }}"><img
+								src="/bootstrap/img/rss.png" width="30" height="25"></a></td>
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			
 		</div>
 	</div>
-
 
 	<footer class=" footer text-center">
 		<a href="#myPage" title="To Top"> <span
