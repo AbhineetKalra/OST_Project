@@ -25,11 +25,12 @@ from google.appengine.ext import ndb
 import jinja2
 import webapp2
 
+# [END imports]
+
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
     extensions=['jinja2.ext.autoescape'],
     autoescape=True)
-# [END imports]
 
 DEFAULT_GUESTBOOK_NAME = 'default_guestbook'
 DEFAULT_RESOURCE_NAME = 'default_resource'
@@ -386,6 +387,31 @@ class Tags(webapp2.RequestHandler):
         }
         template = JINJA_ENVIRONMENT.get_template('tag.html')
         self.response.write(template.render(template_values))        
+
+class RSS(webapp2.RequestHandler):
+    def get(self):
+        user = users.get_current_user()
+        pkey=self.request.get('keyVal')
+        allReservations=Reservation.query().fetch()
+        rssResource=Resource.query(pkey==Resource.primaryKey).fetch()
+        selectedReservations=[];
+        for reservation in allReservations:
+            if reservation.resource_PrimaryKey == pkey:
+                selectedReservations.append(reservation)
+        print rssResource
+        print selectedReservations
+        url = users.create_logout_url(self.request.uri)
+        url_linktext = 'Logout'
+        template_values = {
+            'user': user,
+            'username' : user.nickname().split("@")[0],
+            'url': url,
+            'url_linktext': url_linktext,
+            'selectedReservations': selectedReservations,
+            'resource': rssResource[0],
+        }
+        template = JINJA_ENVIRONMENT.get_template('rss.html')
+        self.response.write(template.render(template_values))       
              
 # [START app]
 app = webapp2.WSGIApplication([
@@ -396,7 +422,8 @@ app = webapp2.WSGIApplication([
     ('/viewResource',ViewResource),
     ('/deleteReservation',DeleteReservation),
     ('/tags',Tags),
-    ('/editResource',EditResource)
+    ('/editResource',EditResource),
+    ('/rss',RSS)
 ], debug=True)
 # [END app]
 
